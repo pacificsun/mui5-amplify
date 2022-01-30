@@ -11,5 +11,18 @@
       "StackId": "arn:aws:cloudformation:ap-southeast-2:241129848125:stack/amplify-redditclone-dev-130127/c52fbb20-5cad-11ec-9886-028399aecace",
       "AmplifyAppId": "d7e35xetq4dok"
     }
+  },
+  "reredit": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-redditclone-reredit-222520-authRole",
+      "UnauthRoleArn": "arn:aws:iam::241129848125:role/amplify-redditclone-reredit-222520-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::241129848125:role/amplify-redditclone-reredit-222520-authRole",
+      "Region": "ap-southeast-2",
+      "DeploymentBucketName": "amplify-redditclone-reredit-222520-deployment",
+      "UnauthRoleName": "amplify-redditclone-reredit-222520-unauthRole",
+      "StackName": "amplify-redditclone-reredit-222520",
+      "StackId": "arn:aws:cloudformation:ap-southeast-2:241129848125:stack/amplify-redditclone-reredit-222520/55d89e00-81eb-11ec-8362-0a14bbf36a92",
+      "AmplifyAppId": "d2m6xwk8t3kco"
+    }
   }
 }
