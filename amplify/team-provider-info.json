@@ -23,6 +23,11 @@
       "StackName": "amplify-redditclone-reredit-222520",
       "StackId": "arn:aws:cloudformation:ap-southeast-2:241129848125:stack/amplify-redditclone-reredit-222520/55d89e00-81eb-11ec-8362-0a14bbf36a92",
       "AmplifyAppId": "d2m6xwk8t3kco"
+    },
+    "categories": {
+      "auth": {
+        "redditclonec47a7812": {}
+      }
     }
   }
 }
