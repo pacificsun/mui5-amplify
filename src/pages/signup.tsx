@@ -1,14 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import { Auth } from "aws-amplify";
+import { Alert, Button, Grid, Snackbar, TextField } from "@mui/material";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button, Grid, TextField } from "@mui/material";
+import { useUser } from "../context/AuthContext";
+import { CognitoUser } from "@aws-amplify/auth";
 
 interface IFormInput {
   Username: string;
   Email: string;
   Password: string;
+  Code: string;
 }
 
 export default function Signup() {
+  const { user, setUser } = useUser();
+  const [open, setOpen] = useState(false);
+  const [showCode, setShowCode] = useState<boolean>(false);
+  const [signUpError, setSignUpError] = useState<string>("");
   const {
     handleSubmit,
     formState: { errors },
@@ -17,7 +25,54 @@ export default function Signup() {
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     console.log("data::", data);
+
+    try {
+      if (showCode) {
+        confirmSignUp(data);
+      } else {
+        signUpWithEmailAndPassword(data);
+        setShowCode(true);
+      }
+    } catch (err) {
+      setSignUpError(err.message);
+      setOpen(true);
+    }
   };
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  async function signUpWithEmailAndPassword(data: IFormInput): Promise<CognitoUser> {
+    const { Username, Password, Email } = data;
+    try {
+      const { user } = await Auth.signUp({
+        username: Username,
+        password: Password,
+        attributes: {
+          email: Email,
+          name: Username,
+        },
+      });
+      console.log("amp user>", user);
+      return user;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async function confirmSignUp(data: IFormInput) {
+    const { Username, Code } = data;
+    try {
+      await Auth.confirmSignUp(Username, Code);
+    } catch (err) {}
+  }
+
+  console.log("user>>", user);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -41,11 +96,11 @@ export default function Signup() {
               required: { value: true, message: "Please enter a username" },
               minLength: {
                 value: 3,
-                message: "Please enter a username between 3-16 character",
+                message: "Enter a valid Code",
               },
               maxLength: {
                 value: 16,
-                message: "Please enter a username between 3-16 character",
+                message: "Enter a valid Code",
               },
             })}
           />
@@ -86,6 +141,35 @@ export default function Signup() {
           </Button>
         </Grid>
       </Grid>
+      {showCode && (
+        <Grid item>
+          <TextField
+            variant="outlined"
+            id="code"
+            label="Code"
+            type="text"
+            error={errors?.Code?.message ? true : false}
+            helperText={errors?.Code?.message ? errors.Code.message : null}
+            {...register("Code", {
+              required: { value: true, message: "Please enter a Code" },
+              minLength: {
+                value: 6,
+                message: "Enter a valid Code",
+              },
+              maxLength: {
+                value: 6,
+                message: "Enter a valid Code",
+              },
+            })}
+          />
+        </Grid>
+      )}
+
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {signUpError}
+        </Alert>
+      </Snackbar>
     </form>
   );
 }
